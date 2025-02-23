@@ -57,6 +57,40 @@ Response:
 }
 ```
 
+### Contributor Effort Analysis
+
+Analyzes the proportion of work done by each contributor based on commit effort scores.
+
+```
+GET /contributor-effort/:owner/:repo
+```
+
+Example:
+```
+GET /contributor-effort/facebook/react
+```
+
+Response:
+```json
+{
+    "repository": "facebook/react",
+    "total_effort": 350,
+    "contributors": [
+        {
+            "author": "Dan Abramov",
+            "effort": 120,
+            "proportion": 0.343
+        },
+        {
+            "author": "Sophie Alpert",
+            "effort": 95,
+            "proportion": 0.271
+        }
+        // ... more contributors
+    ]
+}
+```
+
 ## How It Works
 
 1. The system uses Google's Gemini AI model to analyze git commits

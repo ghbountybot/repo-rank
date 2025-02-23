@@ -44,11 +44,53 @@ async function handleAnalyze(owner: string, repo: string): Promise<Response> {
   }
 }
 
+async function handleContributorEffort(owner: string, repo: string): Promise<Response> {
+  try {
+    const commits = await getCommitsWithPatches(owner, repo);
+    const analyses = await analyzeRepository(owner, repo, commits);
+
+    // Calculate total effort and effort per contributor
+    const contributorEfforts: { [key: string]: number } = {};
+    let totalEffort = 0;
+
+    for (const analysis of analyses) {
+      const commit = commits.find(c => c.hash === analysis.hash);
+      if (commit) {
+        const author = commit.author;
+        contributorEfforts[author] = (contributorEfforts[author] || 0) + analysis.effort;
+        totalEffort += analysis.effort;
+      }
+    }
+
+    // Calculate proportions
+    const contributorProportions = Object.entries(contributorEfforts).map(([author, effort]) => ({
+      author,
+      effort,
+      proportion: totalEffort > 0 ? effort / totalEffort : 0
+    }));
+
+    // Sort by effort (descending)
+    contributorProportions.sort((a, b) => b.effort - a.effort);
+
+    return json({
+      repository: `${owner}/${repo}`,
+      total_effort: totalEffort,
+      contributors: contributorProportions
+    });
+  } catch (error: any) {
+    return json({
+      error: "Failed to analyze repository",
+      message: error.message
+    }, 500);
+  }
+}
+
 // Router implementation
 const routes: Routes = {
   GET: {
     "/": handleRoot,
-    "/analyze/:owner/:repo": handleAnalyze
+    "/analyze/:owner/:repo": handleAnalyze,
+    "/contributor-effort/:owner/:repo": handleContributorEffort
   }
 };
 
