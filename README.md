@@ -1,27 +1,44 @@
 # Repo Rank
 
-A sophisticated Git commit analysis tool that uses Google's Gemini AI to evaluate and score commit complexity and effort. This tool helps teams understand the relative complexity and impact of code changes across their repositories.
+> [!WARNING]  
+> This is really bad code right now. I will improve it a lot soon. Also rankings are not as good as they could be. Feel free to try to improve.
 
-## Features
 
-- 🤖 Powered by Google Gemini AI
-- 📊 Scores commits on a 1-10 effort scale
-- 💡 Provides detailed reasoning for each analysis
-- 🔄 Supports relative scoring against reference commits
-- 📝 Generates comprehensive commit descriptions
+A Git commit analysis tool that uses Google's Gemini AI to evaluate and score commit complexity and effort. This tool helps teams understand what percent of work (roughly) each person has done.
+I see this as as the future of providing long-term incentives when funding repositories.
 
-## Setup
+## Psuedocode
 
-1. Install dependencies:
-
-```bash
-bun install
-```
-
-2. Set up environment variables:
-
-```bash
-export GEMINI_API_KEY=your_api_key_here
+```python
+def analyze_repository(owner, repo, commits, N=5, M=4):
+    """
+    Improved pseudo-Python for analyzing repository commits with Gemini Flash 2.0.
+    Reference set is dynamically updated with each new analysis.
+    
+    Args:
+        owner: Repository owner
+        repo: Repository name
+        commits: List of commits to analyze
+        N: Number of initial commits to analyze (default=5)
+        M: Number of reference commits to use (default=4)
+    """
+    
+    # 1. Analyze N sample commits to build initial knowledge
+    seed_commits = random.sample(commits, N)
+    analyzed_results = initial_score_gemini_flash_2_0(seed_commits)
+    
+    # 2. Process remaining commits with dynamic reference set
+    remaining_commits = [c for c in commits if c not in seed_commits]
+    
+    for commit in remaining_commits:
+        # Sample M most results as reference set
+        reference_set = random.sample(analyzed_results, M)
+        
+        # Analyze current commit using reference set
+        result = gemini_flash_2_0_with_reference(commit, reference_set)
+        analyzed_results.append(result)
+    
+    return analyzed_results
 ```
 
 ## API Endpoints
@@ -89,33 +106,6 @@ Response:
         // ... more contributors
     ]
 }
-```
-
-## How It Works
-
-1. The system uses Google's Gemini AI model to analyze git commits
-2. Each commit is evaluated based on:
-   - Code complexity
-   - Number of files changed
-   - Impact on the codebase
-   - Technical debt implications
-   - Testing requirements
-3. The AI provides a structured analysis including:
-   - Numerical effort score (1-10)
-   - Detailed reasoning for the score
-   - Comprehensive description of changes
-
-## Development
-
-Built with:
-- TypeScript
-- Bun
-- Google Gemini AI API
-
-To run in development mode:
-
-```bash
-bun run dev
 ```
 
 ## Environment Variables
