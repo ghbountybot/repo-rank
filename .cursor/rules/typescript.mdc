@@ -1,0 +1,6 @@
+---
+description: General TypeScript rules
+globs: *.ts
+alwaysApply: false
+---
+- avoid magic numbers; instead use named const

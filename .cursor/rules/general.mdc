@@ -1,0 +1,9 @@
+---
+description: General rules
+globs: 
+alwaysApply: true
+---
+- We use bun
+- Run CLI commands liberally
+- Add/remove packages with bun CLI
+- For tests DO NOT mock... you can just raw API
